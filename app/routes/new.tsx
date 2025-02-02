@@ -44,7 +44,6 @@ async function findRSSFeeds(title: string, url: string) {
 
         await Promise.all(promises);
     }
-  console.log('?:: ', urlFragment, urlFragment in commons);
   } catch (e) {
     console.error(`Error finding RSS Feeds for ${url}: `, e);
   }
@@ -52,9 +51,9 @@ async function findRSSFeeds(title: string, url: string) {
 
 export async function loader({}: Route.LoaderArgs) {
   // reading db
+  let feeds = null;
   try {
     const data = await fs.promises.readFile(filePath, 'utf8')
-
     feeds = JSON.parse(data);
   } catch (err) {
     console.error('Error reading db file');
@@ -81,7 +80,7 @@ export default function New({ loaderData }: Route.ComponentProps) {
   let {feeds} = loaderData;
 
   return (<div className="w-2/3 mx-auto mt-20">
-    <Form method="post" navigate={false} action="/new">
+    <Form method="post" navigate={false} action="">
     <label className="mt-2 block">
      Title
      <br />

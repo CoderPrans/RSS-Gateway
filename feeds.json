@@ -1,9 +1,8 @@
 {
-  "flaviocopes.com": "Flavio;https://flaviocopes.com/rss.xml",
-  "overreacted.io": "Overreacted;https://overreacted.io/rss.xml",
-  "bharatabharati.in": "Bharata Bharati;https://bharatabharati.in/rss.xml",
-  "goldenreed.wordpress.com": "Golden Reed;https://goldenreed.wordpress.com/feed.xml",
+  "https://www.youtube.com/@iip": "India in Pixels;https://www.youtube.com/feeds/videos.xml?channel_id=UC3vpdI7klzLSLNgqZEESZ4g",
   "https://www.youtube.com/@THEJAIPURDIALOGUES": "Jaipur Dialogues;https://www.youtube.com/feeds/videos.xml?channel_id=UCZjxPbi3AeB6YGKCfQ2TroQ",
-  "https://anchor.fm/s/fb29b160/podcast/rss": "The Top Shelf;https://anchor.fm/s/fb29b160/podcast/rss",
-  "https://www.youtube.com/@pranavbhaskarjha9892": "Pranav Bhaskar Jha;https://www.youtube.com/feeds/videos.xml?channel_id=UCprL3Ngty4OznAZktixvN2A"
+  "overreacted.io": "Overreacted;https://overreacted.io/rss.xml",
+  "goldenreed.wordpress.com": "Golden Reed;https://goldenreed.wordpress.com/rss",
+  "bharatabharati.in": "Bharata Bharati;https://bharatabharati.in/rss.xml",
+  "https://anchor.fm/s/fb29b160/podcast/rss": "The Top Shelf;https://anchor.fm/s/fb29b160/podcast/rss"
 }

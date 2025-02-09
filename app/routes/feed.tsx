@@ -2,6 +2,7 @@ import type { Route } from "./+types/home";
 import { type Feeds, filePath } from "./new";
 import { getSlug } from "../feed-list"
 import fs from "fs";
+import * as cheerio from "cheerio";
 
 type Post = {
   [key: string]: string
@@ -26,17 +27,26 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   url = url?.split(';').at(1)
 
-  let response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${url}`);
+  let xml = await fetch(url || "");
 
   let posts: Post[] = [];
 
-  if(response.ok) {
-    let data = await response.json();
-    if (data && data.items) {
-      data.items.map((post: Post) => {
-        posts.push(post as Post)
+  if(xml) {
+    let xmldata: string = await xml.text();
+    const $ = cheerio.load(xmldata, {xmlMode: true});
+
+    let postTags = ["entry", "item"];
+    let tag = postTags.find(t => $(t).length > 0)
+
+    const entries = $(tag)
+    entries.each((i, entry) => {
+      posts.push({
+        title: $(entry).find('title').text(),
+        link: $(entry).find('link').attr('href') ?? $(entry).find('link').text(),
+        pubDate:  ($(entry).find('published').length ? $(entry).find('published') : $(entry).find('pubDate')).text(),
+        content: $(entry).find('content').text()
       })
-    }
+    })
   }
 
  return {url, posts}; 
@@ -50,9 +60,9 @@ export default function Feed({ loaderData }: Route.ComponentProps) {
       <br />
       {loaderData.posts.map((p: Post) => (
           <div className="flex flex-row mb-5" key={p.title}>
-            {p.thumbnail.length > 0 
+            {/*p.thumbnail?.length > 0 
               ? <img src={p.thumbnail} className="w-40" /> 
-              : null}
+              : null*/}
             <div>
               <a href={p.link} target="_blank"><p>{p.title}</p></a>
               <p>{p.pubDate}</p>

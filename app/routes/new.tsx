@@ -13,45 +13,71 @@ export type Feeds = {
 
 let feeds: Feeds = {};
 
-async function findRSSFeeds(title: string, url: string) {
-  let commons: string[] = ["rss", "feed", "rss.xml", "feed.xml"];
-  let urlFragment: string = url.split("/").at(-1) ?? "";
+async function findRSSFeeds(url: string) {
+  let commons: string[] = ["rss", "feed", "feed.xml", "rss.xml"];
 
   try {
-    if (commons.includes(urlFragment)) {
+    const res = await axios.get(url, {
+      headers: {"Accept": "application/rss+xml, application/xml"}
+    });
+    const $ = cheerio.load(res.data, {xmlMode: true});
+
+    let title = $("title").first().text();
+
+    let postTags = ["entry", "item"];
+    let tag = postTags.find(t => $(t).length > 0)
+
+    if (title && tag) {
       feeds[url] = `${title};${url}`;
 
-    } else if (url.includes("youtube")) {
+    } else if (url.includes("youtube.com")) {
       const res = await axios.get(url);
 
       if (res.status == 200) {
-        const $ = cheerio.load(res.data);
-        const feed_url = $("link[type=application/rss+xml]").attr("href");
-        feeds[url] = `${title};${feed_url}`;
-      }
-    } else {
-        const commonFeeds = commons.map(c => `https://${url}/${c}`); 
+        let $ = cheerio.load(res.data);
+        const feed_url = $("link[type=application/rss+xml]").attr("href") ?? "";
 
-        const promises = commonFeeds.map(async (f) => {
+        let xml = await axios.get(feed_url, {
+          headers: {"Accept": "application/rss+xml, application/xml"}
+        });
+
+        if(xml.status == 200) {
+          $ = cheerio.load(xml.data, {xmlMode: true});
+
+          let title = $("title").first().text();
+          feeds[url] = `${title};${feed_url}`;
+        }
+      }
+
+    } else {
+      const commonFeeds = commons.map(c => `${url}/${c}`); 
+
+      const promises = commonFeeds.map(async (f) => {
+        try {
           const res = await axios.get(f, {
             headers: {"Accept": "application/rss+xml, application/xml"}
           });
 
           if (res.status === 200) {
+            const $ = cheerio.load(res.data, {xmlMode: true});
+
+            let title = $("title").first().text();
             feeds[url] = `${title};${f}`;
           }
-        });
+        } catch (e) {
+          console.error(`Error fetching ${f}: `, e.response.status)
+        }
+      });
 
-        await Promise.all(promises);
+      await Promise.all(promises);
     }
   } catch (e) {
-    console.error(`Error finding RSS Feeds for ${url}: `, e);
+    console.error(`Error finding RSS Feeds for ${url} `);
   }
 }
 
 export async function loader({}: Route.LoaderArgs) {
   // reading db
-  let feeds = null;
   try {
     const data = await fs.promises.readFile(filePath, 'utf8')
     feeds = JSON.parse(data);
@@ -64,9 +90,8 @@ export async function loader({}: Route.LoaderArgs) {
 export async function action({ request }: Route.ActionArgs) {
   const data = await request.formData(); 
   const searchFor = data.get("url");
-  const title = data.get("title");
 
-  if(typeof searchFor == "string") await findRSSFeeds(title, searchFor);
+  if(typeof searchFor == "string") await findRSSFeeds(searchFor);
 
   // writing to db
   fs.writeFile(filePath, JSON.stringify(feeds, null, 2), err => {
@@ -82,17 +107,9 @@ export default function New({ loaderData }: Route.ComponentProps) {
   return (<div className="w-2/3 mx-auto mt-20">
     <Form method="post" navigate={false} action="">
     <label className="mt-2 block">
-     Title
-     <br />
-     <input className="p-1 rounded-sm text-black bg-white shadow" type="text" name="title" />
-    </label>
-    <label className="mt-2 block">
-     URL
-     <br />
-     <input placeholder="Feed URL, Blog URL or Youtube Channel" className="p-1 rounded-sm text-black bg-white shadow" type="text" name="url" />
+     Add: &nbsp;
+     <input placeholder="Podcast Feed, Blog or Youtube Channel URL" className="w-full p-1 rounded-sm text-black bg-white shadow" type="text" name="url" />
      </label>
-     <br />
-     <button className="bg-green-700 text-white rounded-sm px-3 py-0.5 shadow cursor-pointer" type="submit">Search</button>
     </Form>
 
     <FeedList feeds={feeds} /> 

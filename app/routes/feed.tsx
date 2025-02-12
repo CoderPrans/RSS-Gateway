@@ -1,5 +1,5 @@
 import type { Route } from "./+types/home";
-import { type Feeds, filePath } from "./new";
+import { type Feeds, filePath } from "./home";
 import { getSlug } from "../feed-list"
 import fs from "fs";
 import * as cheerio from "cheerio";
@@ -54,7 +54,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function Feed({ loaderData }: Route.ComponentProps) {
   return (
-    <>
+    <div className="p-20 h-screen overflow-auto">
       <h2>The Feed for {loaderData.url}</h2>
       <hr />
       <br />
@@ -71,6 +71,6 @@ export default function Feed({ loaderData }: Route.ComponentProps) {
           </div>
         )
       )}
-    </>
+    </div>
   );
 }

@@ -10,13 +10,14 @@ export default function FeedList({feeds}: {feeds: Feeds}) {
   let { key } = useParams();
 
   return <div className="mt-20">{
-    feeds && Object.entries(feeds).map(
-    ([k, v]) => 
-    <NavLink prefetch="viewport" key={k} to={`feed/${getSlug(v)}`}>
-      <p className={`hover:bg-yellow-500 hover:text-black 
-          ${getSlug(v) === key ? "bg-yellow-500 text-black" : ""}
-        `}>{(v.split(';')?.at(0) as string) ?? ""}</p>
-    </NavLink>
+    feeds && Object.entries(feeds)
+      .sort((a) =>  a[0].includes('youtube.com') ? 1 : -1)
+      .map(([k, v]) => 
+        <NavLink key={k} to={`feed/${getSlug(v)}`}>
+          <p className={`hover:bg-yellow-500 hover:text-black 
+              ${getSlug(v) === key ? "bg-yellow-500 text-black" : ""}
+            `}>{(v.split(';')?.at(0) as string) ?? ""}</p>
+        </NavLink>
   )}
   </div>
 }

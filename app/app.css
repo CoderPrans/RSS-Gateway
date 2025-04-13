@@ -5,6 +5,7 @@
 html,
 body {
   @apply bg-gray-100 dark:bg-neutral-950;
+  font-family: JetBrains Mono, monospace; 
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;

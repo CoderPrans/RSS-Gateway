@@ -105,16 +105,16 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   let {feeds} = loaderData;
 
   return (
-    <div className="flex">
-      <div className="w-84 m-20">
-        <Form method="post" navigate={false} action="">
+    <div className="flex h-screen">
+      <div className="w-84 m-20 relative">
+        <FeedList feeds={feeds} /> 
+
+        <Form className="absolute bottom-2" method="post" navigate={false} action="">
         <label className="mt-2 block">
          Add: &nbsp;
-         <input placeholder="Podcast Feed, Blog or Youtube Channel URL" className="w-full p-1 rounded-sm text-black bg-white shadow" type="text" name="url" />
+         <input placeholder="Podcast Feed, Blog or YT Channel" className="w-full p-1 rounded-sm text-black bg-white shadow" type="text" name="url" />
          </label>
         </Form>
-
-        <FeedList feeds={feeds} /> 
       </div>
 
       <div className="flex-1">

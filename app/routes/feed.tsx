@@ -55,8 +55,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 export default function Feed({ loaderData }: Route.ComponentProps) {
   return (
     <div className="p-20 h-screen overflow-auto">
-      <h2>The Feed for {loaderData.url}</h2>
-      <hr />
+      <h2 className="pb-4 border-b-2 border-gray-200 text-right">The Feed for {loaderData.url}</h2>
       <br />
       {loaderData.posts.map((p: Post) => (
           <div className="flex flex-row mb-5" key={p.title}>
@@ -65,7 +64,7 @@ export default function Feed({ loaderData }: Route.ComponentProps) {
               : null*/}
             <div>
               <a href={p.link} target="_blank"><p>{p.title}</p></a>
-              <p>{p.pubDate}</p>
+              <p>{new Date(p.pubDate).toLocaleString()}</p>
               <p>{p.content}</p>
             </div>
           </div>

@@ -108,14 +108,14 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     <div className="flex h-screen">
       <div className="w-84 m-20 relative">
         <FeedList feeds={feeds} /> 
+      </div>
 
-        <Form className="absolute bottom-2" method="post" navigate={false} action="">
+      <Form className="absolute bottom-2 left-2" method="post" navigate={false} action="">
         <label className="mt-2 block">
          Add: &nbsp;
-         <input placeholder="Podcast Feed, Blog or YT Channel" className="w-full p-1 rounded-sm text-black bg-white shadow" type="text" name="url" />
+         <input placeholder="Podcast, Blog or YT Channel" className="w-full p-1 rounded-sm text-black bg-white shadow" type="text" name="url" />
          </label>
-        </Form>
-      </div>
+      </Form>
 
       <div className="flex-1">
         <Outlet />
